@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Controller : MonoBehaviour
 {
-    public void Load()
+    public void Load(string loadSceneName)
     {
         LoadingController loadingController = gameObject.AddComponent<LoadingController>();
-        loadingController.LoadScene("UI Scene");
+        loadingController.LoadScene(loadSceneName);
 
     }
 }
