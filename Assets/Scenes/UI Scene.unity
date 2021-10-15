@@ -740,6 +740,7 @@ MonoBehaviour:
   buttons:
   - {fileID: 1156308896}
   - {fileID: 375852351}
+  volumeTexture: {fileID: 2800000, guid: e153e7320d1c3b247b8dd9913128265a, type: 3}
 --- !u!1001 &2097593161
 PrefabInstance:
   m_ObjectHideFlags: 0
