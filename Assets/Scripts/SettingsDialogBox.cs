@@ -1,7 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class SettingsDialogBox : MonoBehaviour
 {
@@ -103,71 +103,87 @@ public class SettingsDialogBox : MonoBehaviour
     }
 }
 
-public class ButtonGUI
+public class ButtonGUI : MyGUI
 {
-    private float buttonWidth;
-    private float buttonHeight;
-    private float buttonX;
-    private float buttonY;
     private string buttonName;
-    private Rect buttonRect;
-
-    public ButtonGUI(float buttonWidth, float buttonHeight, float buttonX, float buttonY, string buttonName)
+    
+    public ButtonGUI(float buttonWidth, float buttonHeight, float buttonX, float buttonY, string buttonName) : base(buttonWidth, buttonHeight,buttonX,buttonY)
     {
-        this.buttonWidth = buttonWidth;
-        this.buttonHeight = buttonHeight;
-        this.buttonX = buttonX;
-        this.buttonY = buttonY;
         this.buttonName = buttonName;
-        buttonRect = CreateRect();
-    }
-
-    private Rect CreateRect()
-    {
-        return new Rect(buttonX, buttonY, buttonWidth, buttonHeight);
     }
 
     public bool IsClicked()
     {
+        Rect buttonRect = GetRect();
         return GUI.Button(buttonRect, buttonName);
     }
 }
 
-public class SliderGUI
+public class SliderGUI: MyGUI
 {
-    private float sliderWidth;
-    private float sliderHeight;
-    private float sliderX;
-    private float sliderY;
     private float sliderValue;
     private float sliderLeftValue;
-    private float sliderRightValue;
-    private Rect sliderRect;
+    private float sliderRightValue; 
 
-    
-
-    public SliderGUI(float sliderWidth, float sliderHeight, float sliderX, float sliderY, float sliderValue, float sliderLeftValue, float sliderRightValue)
-    {
-        this.sliderWidth = sliderWidth;
-        this.sliderHeight = sliderHeight;
-        this.sliderX = sliderX;
-        this.sliderY = sliderY;
+    public SliderGUI(float sliderWidth, float sliderHeight, float sliderX, float sliderY, float sliderValue, float sliderLeftValue, float sliderRightValue) : base(sliderWidth,sliderHeight,sliderX,sliderY)
+    {    
         this.sliderValue = sliderValue;
         this.sliderLeftValue = sliderLeftValue;
         this.sliderRightValue = sliderRightValue;
-        sliderRect = CreateRect();
+    }
+
+    public float GetSliderValue()
+    {
+        Rect sliderRect = GetRect();
+        sliderValue = GUI.HorizontalSlider(sliderRect, sliderValue, sliderLeftValue, sliderRightValue);
+        return sliderValue;
+    }
+}
+
+public class MyGUI
+{
+    private float width;
+    private float height;
+    private float x;
+    private float y;
+    private Rect rect;
+
+    public MyGUI(float width, float height, float x, float y)
+    {
+        this.width = width;
+        this.height = height;
+        this.x = x;
+        this.y = y;
+        rect = CreateRect();
     }
 
     private Rect CreateRect()
     {
-        return new Rect(sliderX, sliderY, sliderWidth, sliderHeight);
+        return new Rect(x, y, width, height);
     }
 
-
-
-    public float GetSliderValue()
+    public Rect GetRect()
     {
-        sliderValue = GUI.HorizontalSlider(sliderRect, sliderValue, sliderLeftValue, sliderRightValue);
-        return sliderValue;
+        return rect;
+    }
+
+    public float GetX()
+    {
+        return x;
+    }
+
+    public float GetY()
+    {
+        return y;
+    }
+
+    public float GetWidth()
+    {
+        return width;
+    }
+
+    public float GetHeight()
+    {
+        return height;
     }
 }
