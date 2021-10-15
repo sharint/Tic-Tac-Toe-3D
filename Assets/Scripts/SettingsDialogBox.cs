@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class SettingsDialogBox : MonoBehaviour
 {
@@ -18,10 +19,7 @@ public class SettingsDialogBox : MonoBehaviour
 
     private void Start()
     {
-        RectTransform rectTransformCanvas = canvas.GetComponent<RectTransform>();
-        canvasWidth = rectTransformCanvas.rect.width;
-        canvasHeight = rectTransformCanvas.rect.height;
-
+        GetCanvasRect();
         SetupAllGUI();
     }
 
@@ -30,12 +28,19 @@ public class SettingsDialogBox : MonoBehaviour
     {
         if (stateGUI) 
         {
-            print(volumeSlider.GetValueSlider());
+            print(volumeSlider.GetSliderValue());
             if (backButton.IsClicked()) 
             {
                 HideSettingsUI();
             }
         }
+    }
+
+    private void GetCanvasRect()
+    {
+        RectTransform rectTransformCanvas = canvas.GetComponent<RectTransform>();
+        canvasWidth = rectTransformCanvas.rect.width;
+        canvasHeight = rectTransformCanvas.rect.height;
     }
 
     private void SetupAllGUI()
@@ -47,7 +52,7 @@ public class SettingsDialogBox : MonoBehaviour
     private void SetupVolumeSlider()
     {
         float backButtonOffsetX = 0;
-        float backButtonOffsetY = -200;
+        float backButtonOffsetY = 100;
         float backButtonWidth = 300;
         float backButtonHeight = 10;
         float backButtonX = (canvasWidth / 2) - (backButtonWidth / 2) + backButtonOffsetX;
@@ -62,7 +67,7 @@ public class SettingsDialogBox : MonoBehaviour
     private void SetupBackButton()
     {
         float backButtonOffsetX = 0;
-        float backButtonOffsetY = 100;
+        float backButtonOffsetY = 200;
         float backButtonWidth = 300;
         float backButtonHeight = 50;
         float backButtonX = (canvasWidth / 2) - (backButtonWidth / 2) + backButtonOffsetX;
@@ -139,6 +144,8 @@ public class SliderGUI
     private float sliderRightValue;
     private Rect sliderRect;
 
+    
+
     public SliderGUI(float sliderWidth, float sliderHeight, float sliderX, float sliderY, float sliderValue, float sliderLeftValue, float sliderRightValue)
     {
         this.sliderWidth = sliderWidth;
@@ -156,7 +163,9 @@ public class SliderGUI
         return new Rect(sliderX, sliderY, sliderWidth, sliderHeight);
     }
 
-    public float GetValueSlider()
+
+
+    public float GetSliderValue()
     {
         sliderValue = GUI.HorizontalSlider(sliderRect, sliderValue, sliderLeftValue, sliderRightValue);
         return sliderValue;

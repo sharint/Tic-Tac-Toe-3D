@@ -7,52 +7,38 @@ public class LoadingController : MonoBehaviour
 {
     private const string loadingScreenPrefabPath = "Prefabs/Loading Screen";
 
-    private string loadSceneName;
-    private GameObject loadingScreenPrefab;
-    private Slider progressBar;
-    private Text currentStateText;
+    private static string loadSceneName;
+    private static GameObject loadingScreenPrefab;
+    private static GameObject loadingScreen;
+    
     private AsyncOperation asyncLoad;
 
-    private void LoadingControllerConstructor(string loadSceneName)
+    public Image progressBar;
+    public Text currentProgressText;
+    public Text currentStateText;
+
+    private void Start()
     {
-        this.loadSceneName = loadSceneName;
-        loadingScreenPrefab = FindLoadingScreenPrefab();
+        Load();
     }
 
-    private void LoadingControllerConstructor(string loadSceneName, GameObject loadingScreenPrefab)
+    public static void LoadNew(string SceneName)
     {
-        this.loadSceneName = loadSceneName;
-        this.loadingScreenPrefab = loadingScreenPrefab;
-    }
-
-    private GameObject FindLoadingScreenPrefab()
-    {
-        return Resources.Load<GameObject>(loadingScreenPrefabPath);
+        loadingScreenPrefab = Resources.Load<GameObject>(loadingScreenPrefabPath);
+        loadingScreen = Instantiate(loadingScreenPrefab);
+        loadSceneName = SceneName;
     }
 
     private void SetupUI(GameObject _gameObject)
     {
-        progressBar = _gameObject.GetComponentInChildren<Slider>();
-        currentStateText = _gameObject.GetComponentInChildren<Text>();
-        progressBar.value = 0f;
+        progressBar.fillAmount = 0f;
+        currentProgressText.text = "0%";
         currentStateText.text = LoadingStatesText.loading;
-    }
-
-    public void LoadScene(string loadSceneName)
-    {
-        LoadingControllerConstructor(loadSceneName);
-        Load();
-    }
-
-    public void LoadScene(string loadSceneName, GameObject loadingScreenPrefab)
-    {
-        LoadingControllerConstructor(loadSceneName, loadingScreenPrefab);
-        Load();
     }
 
     private void Load()
     {
-        GameObject loadingScreen = Instantiate(loadingScreenPrefab);
+        //GameObject loadingScreen = Instantiate(loadingScreenPrefab);
         SetupUI(loadingScreen);
 
         StartCoroutine(LoadScene());
@@ -67,7 +53,11 @@ public class LoadingController : MonoBehaviour
 
         while (!asyncLoad.isDone)
         {
-            progressBar.value = asyncLoad.progress;
+            float loadingProgress = asyncLoad.progress / 0.9f;
+            progressBar.fillAmount = loadingProgress;
+            int intProgress = (int)loadingProgress * 100;
+            currentProgressText.text =intProgress.ToString() + "%";
+            //currentProgressText.text = (int)loadingProgress + "%";
 
             isLoaded();
 
