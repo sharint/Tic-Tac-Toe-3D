@@ -11,8 +11,8 @@ public class SettingsDialogBox : MonoBehaviour
 
     public List<GameObject> buttons;
 
-    private float canvasWidth;
-    private float canvasHeight;
+    public float canvasWidth;
+    public float canvasHeight;
 
     private ButtonGUI backButton;
     private VolumeSliderGUI volumeSlider;
@@ -190,7 +190,8 @@ public class VolumeSliderGUI : SliderGUI
         float sliderLeftValue = GetSliderLeftValue();
         float sliderRightValue = GetSliderRightValue();
         float sliderValue = GUI.HorizontalSlider(sliderRect, oldSliderValue, sliderLeftValue, sliderRightValue);
-        string textSliderValue = (sliderValue * 100).ToString();
+        sliderValue = Mathf.Round(sliderValue*100);
+        string textSliderValue = sliderValue.ToString();
         label.text = textSliderValue;
 
         ShowAllGUI();

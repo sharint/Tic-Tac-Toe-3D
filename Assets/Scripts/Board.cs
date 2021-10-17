@@ -23,6 +23,8 @@ public class Board : MonoBehaviour
     public Material cross;
     public Material circle;
 
+    private bool gameOver = false;
+
     private void Start()
     {
 
@@ -73,15 +75,16 @@ public class Board : MonoBehaviour
         {
             return false;
         }
-        if(turnsCount >= 9)
+        if(turnsCount >= 8)
         {
+            gameOver = true;
             return true;
         }
         for(int i = 1; i < 5; i++)
         {
             if (check(i))
             {
-                //print("win");
+                gameOver = true;
                 return true;
             }
         }
@@ -93,6 +96,7 @@ public class Board : MonoBehaviour
     private bool check(int step)
     {
         int counter = 0;
+        playerSectors.Sort();
         for (int i = playerSectors[0]; i < 9; i += step)
         {
             if (playerSectors[counter] != i)
@@ -107,12 +111,17 @@ public class Board : MonoBehaviour
 
     public void PlayerTurn(int id)
     {
+        if (gameOver)
+        { 
+            return;
+        }
         GameObject sector = sectors[id];
         SetStateSector(States.circle, sector);
         freeSectors.Remove(id);
         playerSectors.Add(id);
         turnsCount += 1;
         EnemyTurn();
+        
     }
 
     private void SetStateSector(States state, GameObject sector)

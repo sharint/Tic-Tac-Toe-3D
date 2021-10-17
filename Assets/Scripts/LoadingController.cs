@@ -17,31 +17,31 @@ public class LoadingController : MonoBehaviour
     public Text currentProgressText;
     public Text currentStateText;
 
-    private void Start()
-    {
-        Load();
-    }
-
-    public static void LoadNew(string SceneName)
+    public static void Load(string SceneName)
     {
         loadingScreenPrefab = Resources.Load<GameObject>(loadingScreenPrefabPath);
         loadingScreen = Instantiate(loadingScreenPrefab);
         loadSceneName = SceneName;
+
     }
 
-    private void SetupUI(GameObject _gameObject)
+    private void Start()
+    {
+        SetupAndLoad();
+    }
+
+    private void SetupAndLoad()
+    {
+        SetupUI();
+
+        StartCoroutine(LoadScene());
+    }
+
+    private void SetupUI()
     {
         progressBar.fillAmount = 0f;
         currentProgressText.text = "0%";
         currentStateText.text = LoadingStatesText.loading;
-    }
-
-    private void Load()
-    {
-        //GameObject loadingScreen = Instantiate(loadingScreenPrefab);
-        SetupUI(loadingScreen);
-
-        StartCoroutine(LoadScene());
     }
 
     private IEnumerator LoadScene()

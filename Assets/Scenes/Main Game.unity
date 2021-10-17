@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -198,7 +198,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1116789984}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 1, y: 1, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -327,10 +327,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sectors: []
   freeSectors: 
+  playerSectors: 
+  enemySectors: 
   sectorPrefab: {fileID: 3327585531851397416, guid: 88fa513eb1754fc4ab994537ecc15a85,
     type: 3}
-  cross: {fileID: 2100000, guid: bd648c429f80fdc478b76507645968ae, type: 2}
-  circle: {fileID: 2100000, guid: 084295951f66d164aa324a8b2bb71f8a, type: 2}
+  cross: {fileID: 2100000, guid: f7804fc38fbe342cd9ad90dd0052d820, type: 2}
+  circle: {fileID: 2100000, guid: 966fa0773bf1741079709951cf0ede21, type: 2}
 --- !u!4 &1394742262
 Transform:
   m_ObjectHideFlags: 0
