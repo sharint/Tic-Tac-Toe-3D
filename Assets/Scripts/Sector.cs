@@ -4,24 +4,26 @@ using UnityEngine;
 
 public class Sector : MonoBehaviour
 {
-    public enum States {none ,cross, circle };
 
-    public States state;
+    public TicTacToePlayer.Sides state;
 
-    public int id;
+    public int sectorIndex;
+
+    private BoardController controller;
 
     private void Start()
     {
-        state = States.none;
+        state = TicTacToePlayer.Sides.none;
+
+        GameObject controllerGameObject = GameObject.FindGameObjectWithTag("GameController");
+        controller = controllerGameObject.GetComponent<BoardController>();
     }
 
     private void OnMouseDown()
     {
-        if (state == States.none)
+        if (state == TicTacToePlayer.Sides.none)
         {
-            Board board = gameObject.GetComponentInParent<Board>();
-            board.PlayerTurn(id);
-            state = States.cross;
+            controller.PlayerTapped(sectorIndex);
         }
         
     }

@@ -43,7 +43,7 @@ public class Board : MonoBehaviour
             Vector3 position = new Vector3(i % 3, i / 3, 0);
             GameObject sector = Instantiate(sectorPrefab, position, sectorPrefab.transform.rotation);
             sector.transform.SetParent(gameObject.transform);
-            sector.GetComponent<Sector>().id = i;
+            sector.GetComponent<Sector>().sectorIndex = i;
             sectors.Add(sector);
         }
     }
@@ -58,8 +58,8 @@ public class Board : MonoBehaviour
         int randomID = Random.Range(0, freeSectors.Count);
         int sectorIndex = freeSectors[randomID];
         GameObject sector = sectors[sectorIndex];
-        sector.GetComponent<Sector>().state = Sector.States.cross;
-        SetStateSector(States.cross, sector);
+        //sector.GetComponent<Sector>().state = Sector.States.cross;
+        //SetStateSector(States.cross, sector);
         freeSectors.Remove(sectorIndex);
         enemySectors.Add(randomID);
         turnsCount += 1;
@@ -116,7 +116,7 @@ public class Board : MonoBehaviour
             return;
         }
         GameObject sector = sectors[id];
-        SetStateSector(States.circle, sector);
+        //SetStateSector(States.circle, sector);
         freeSectors.Remove(id);
         playerSectors.Add(id);
         turnsCount += 1;
@@ -124,19 +124,6 @@ public class Board : MonoBehaviour
         
     }
 
-    private void SetStateSector(States state, GameObject sector)
-    {
-        switch (state) {
-            case States.circle:
-                sector.GetComponent<Renderer>().material = circle;
-                break;
-            case States.cross:
-                sector.GetComponent<Renderer>().material = cross;
-                break;
-            default:
-                print("Erorr, unknown state");
-                break;
-        }
-    }
+    
     
 }

@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class Enemy: TicTacToePlayer
 {
-    public Enemy(): base()
+    public Enemy(string name) : base(name) { }
+
+    public override string Turn(int sectorIndex)
     {
+        sectorIndex = GetRandomNumber();
+        return base.Turn(sectorIndex);
         
     }
 
-    public override void Turn()
+    private int GetRandomNumber()
     {
-        base.Turn();
-        Debug.Log("Player turn");
+        List<int> freeSectors = GetFreeSectors();
+        int freeSectorsCount = freeSectors.Count;
+        int randomNumber = Random.Range(0, freeSectorsCount);
+        int randomSectorIndex = freeSectors[randomNumber];
+        return randomSectorIndex;
     }
-
 }
