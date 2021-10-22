@@ -248,6 +248,22 @@ public class ImageGUI : MyGUI
     }
 }
 
+public class BoxGUI: MyGUI
+{
+    private string text;
+
+    public BoxGUI(float width, float height, float x, float y, string text) : base(width, height, x, y)
+    {
+        this.text = text;
+    }
+
+    public override void Show()
+    {
+        Rect boxRect = GetRect();
+        GUI.Box(boxRect, text);
+    }
+}
+
 public class MyGUI
 {
     private float width;
