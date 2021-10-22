@@ -21,7 +21,7 @@ public class Sector : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (state == TicTacToePlayer.Sides.none)
+        if (state == TicTacToePlayer.Sides.none && !SettingsDialogBox.isShowingGUI)
         {
             controller.PlayerTapped(sectorIndex);
         }

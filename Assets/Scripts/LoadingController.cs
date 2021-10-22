@@ -9,7 +9,6 @@ public class LoadingController : MonoBehaviour
 
     private static string loadSceneName;
     private static GameObject loadingScreenPrefab;
-    private static GameObject loadingScreen;
     
     private AsyncOperation asyncLoad;
 
@@ -20,7 +19,7 @@ public class LoadingController : MonoBehaviour
     public static void Load(string SceneName)
     {
         loadingScreenPrefab = Resources.Load<GameObject>(loadingScreenPrefabPath);
-        loadingScreen = Instantiate(loadingScreenPrefab);
+        Instantiate(loadingScreenPrefab);
         loadSceneName = SceneName;
 
     }
@@ -57,7 +56,6 @@ public class LoadingController : MonoBehaviour
             progressBar.fillAmount = loadingProgress;
             int intProgress = (int)loadingProgress * 100;
             currentProgressText.text =intProgress.ToString() + "%";
-            //currentProgressText.text = (int)loadingProgress + "%";
 
             isLoaded();
 

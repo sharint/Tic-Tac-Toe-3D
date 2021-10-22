@@ -5,24 +5,33 @@ using UnityEngine;
 
 public class SettingsDialogBox : MonoBehaviour
 {
-    bool isShowingGUI = false;
+    public static bool isShowingGUI = false;
 
     public GameObject canvas;
 
-    public List<GameObject> buttons;
+    public List<GameObject> uiElements;
 
-    public float canvasWidth;
-    public float canvasHeight;
+    private float canvasWidth;
+    private float canvasHeight;
 
     private ButtonGUI backButton;
     private VolumeSliderGUI volumeSlider;
 
-    public Texture volumeTexture;
+    private Texture volumeTexture;
+
+    private SaveDataController saveDataController;
+
+    private void Awake()
+    {
+        volumeTexture = Resources.Load<Texture>("UI/Volume Texture");
+    }
 
     private void Start()
     {
         GetCanvasRect();
-        SetupAllGUI();
+        saveDataController = new SaveDataController();
+        saveDataController.LoadGame();
+        SetupAllGUI(saveDataController.volumeValue);
     }
 
 
@@ -30,9 +39,10 @@ public class SettingsDialogBox : MonoBehaviour
     {
         if (isShowingGUI) 
         {
-            volumeSlider.GetSliderValue();
+            saveDataController.volumeValue = volumeSlider.GetSliderValue();
             if (backButton.IsClicked()) 
             {
+                saveDataController.SaveGame();
                 HideSettingsUI();
             }
         }
@@ -45,13 +55,13 @@ public class SettingsDialogBox : MonoBehaviour
         canvasHeight = rectTransformCanvas.rect.height;
     }
 
-    private void SetupAllGUI()
+    private void SetupAllGUI(float sliderValue)
     {
-        SetupVolumeSlider();
+        SetupVolumeSlider(sliderValue);
         SetupBackButton();
     }
 
-    private void SetupVolumeSlider()
+    private void SetupVolumeSlider(float sliderValue)
     {
         float backButtonOffsetX = 0;
         float backButtonOffsetY = 100;
@@ -59,9 +69,8 @@ public class SettingsDialogBox : MonoBehaviour
         float backButtonHeight = 10;
         float backButtonX = (canvasWidth / 2) - (backButtonWidth / 2) + backButtonOffsetX;
         float backButtonY = (canvasHeight / 2) - (backButtonHeight / 2) + backButtonOffsetY;
-        float sliderValue = 1f;
         float sliderLeftValue = 0f;
-        float sliderRightValue = 1f;
+        float sliderRightValue = 100f;
         volumeSlider = new VolumeSliderGUI(volumeTexture,backButtonWidth, backButtonHeight, backButtonX, backButtonY, sliderValue, sliderLeftValue,sliderRightValue);
     }
 
@@ -83,9 +92,9 @@ public class SettingsDialogBox : MonoBehaviour
     private void ShowSettingsUI()
     {
         isShowingGUI = true;
-        foreach (GameObject uiButton in buttons)
+        foreach (GameObject uiElement in uiElements)
         {
-            uiButton.SetActive(false);
+            uiElement.SetActive(false);
         }
 
     }
@@ -93,9 +102,9 @@ public class SettingsDialogBox : MonoBehaviour
     private void HideSettingsUI()
     {
         isShowingGUI = false;
-        foreach (GameObject uiButton in buttons)
+        foreach (GameObject uiElement in uiElements)
         {
-            uiButton.SetActive(true);
+            uiElement.SetActive(true);
         }
     }
 
@@ -138,6 +147,7 @@ public class SliderGUI: MyGUI
     {
         Rect sliderRect = GetRect();
         sliderValue = GUI.HorizontalSlider(sliderRect, sliderValue, sliderLeftValue, sliderRightValue);
+        
         return sliderValue;
     }
 
@@ -164,7 +174,7 @@ public class VolumeSliderGUI : SliderGUI
     public VolumeSliderGUI(Texture texture, float sliderWidth, float sliderHeight, float sliderX, float sliderY, float sliderValue, float sliderLeftValue, float sliderRightValue) : base(sliderWidth, sliderHeight, sliderX, sliderY, sliderValue, sliderLeftValue, sliderRightValue)
     {
         this.texture = texture;
-        stateText = "100";
+        stateText = sliderValue.ToString();
         SetNearUI();
     }
 
@@ -190,7 +200,7 @@ public class VolumeSliderGUI : SliderGUI
         float sliderLeftValue = GetSliderLeftValue();
         float sliderRightValue = GetSliderRightValue();
         float sliderValue = GUI.HorizontalSlider(sliderRect, oldSliderValue, sliderLeftValue, sliderRightValue);
-        sliderValue = Mathf.Round(sliderValue*100);
+        sliderValue = Mathf.Round(sliderValue);
         string textSliderValue = sliderValue.ToString();
         label.text = textSliderValue;
 
@@ -234,7 +244,7 @@ public class ImageGUI : MyGUI
     public override void Show()
     {
         Rect imageRect = GetRect();
-        GUI.DrawTexture(GetRect(), image);
+        GUI.DrawTexture(imageRect, image);
     }
 }
 

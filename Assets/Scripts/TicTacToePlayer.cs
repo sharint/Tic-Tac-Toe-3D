@@ -8,6 +8,8 @@ public class TicTacToePlayer: ITicTacToePlayer
     private int[,] winConditions = new int[8, 3] { { 0, 1, 2 }, { 0, 3, 6 }, { 0, 4, 8 }, {1, 4, 7 }, { 2, 4, 6 }, { 2, 5, 8 }, { 3, 4, 5 }, { 6, 7, 8 } };
     private string name;
 
+    private int score;
+
     private static int countTurns;
 
     private static List<int> freeSectors;
@@ -19,9 +21,10 @@ public class TicTacToePlayer: ITicTacToePlayer
     private Sides side;
     public enum Sides { none, circle, cross };
 
-    public TicTacToePlayer(string name)
+    public TicTacToePlayer(string name, int score)
     {
         this.name = name;
+        this.score = score;
         allSectors = BoardController.sectors;
         playerSectors = new List<int>();
         freeSectors = new List<int>();
@@ -36,6 +39,21 @@ public class TicTacToePlayer: ITicTacToePlayer
     public string GetName()
     {
         return name;
+    }
+
+    public int GetScore()
+    {
+        return score;
+    }
+
+    public void AddScore(int score)
+    {
+        this.score += score;
+    }
+
+    public void RemoveScore(int score)
+    {
+        this.score -= score;
     }
 
     public List<int> GetFreeSectors()
@@ -102,7 +120,7 @@ public class TicTacToePlayer: ITicTacToePlayer
         {
             if (CheckingOneOfTheWinningConditions(i))
             {
-                return name + " wins!";
+                return GameSituations.win;
             }
         }
         if (IsTie())

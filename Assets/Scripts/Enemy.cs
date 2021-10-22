@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Enemy: TicTacToePlayer
 {
-    public Enemy(string name) : base(name) { }
+    public Enemy(string name, int score) : base(name, score) { }
 
     public override string Turn(int sectorIndex)
     {

@@ -1,17 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-
+using UnityEngine.SceneManagement;
 
 public class BoardController : MonoBehaviour
 {
-    public Text gameSituationStateText;
-
     private Enemy enemy;
     private Player player;
 
     private const int countSectors = 9;
+    private const int enemySectorIndex = -1; // default value
 
     private GameObject sectorPrefab;
     public static List<GameObject> sectors;
@@ -19,11 +17,11 @@ public class BoardController : MonoBehaviour
     public static Material cross;
     public static Material circle;
 
-    public enum States { none, cross, circle };
-    private enum Sides { cicle, cross };
-
     private bool isPlayerTurnFirst;
-    private bool isGameOver = false;
+    public static bool isGameOver;
+
+    private UiViewController uiViewController;
+    private SaveDataController saveDataController;
 
     private void Awake()
     {
@@ -34,22 +32,41 @@ public class BoardController : MonoBehaviour
 
     void Start()
     {
+        saveDataController = new SaveDataController();
+        isGameOver = false;
         sectors = new List<GameObject>();
+        SetUiViewController();
 
         CreateTicTacToeBoard();
 
-        enemy = new Enemy("Enemy");
-        player = new Player("Player");
+        CreateTicTacToePlayers();
+        
+
+        uiViewController.SetDefaultValuesText(enemy,player);
 
         SetSides();
         SetFirstTurn();
 
         if (!isPlayerTurnFirst)
         {
-            int randomInt = 0;
-            enemy.Turn(randomInt);
+            enemy.Turn(enemySectorIndex);
         }
 
+    }
+
+    private void SetUiViewController()
+    {
+        GameObject uiViewControllerGameObject = GameObject.FindGameObjectWithTag("UI Controller");
+        uiViewController = uiViewControllerGameObject.GetComponent<UiViewController>();
+    }
+
+    private void CreateTicTacToePlayers()
+    {
+        int enemyScore = 0;
+        saveDataController.LoadGame();
+        int playerScore = saveDataController.playerScore;
+        player = new Player("Tim", playerScore);
+        enemy = new Enemy("Bot#1", enemyScore);
     }
 
     private void SetFirstTurn()
@@ -148,13 +165,19 @@ public class BoardController : MonoBehaviour
         sectors.Add(sector);
     }
 
-    private bool CheckingCondition(string playerCondition)
+    private bool CheckingCondition(string playerCondition, TicTacToePlayer ticTacToePlayer)
     {
-        if (playerCondition != "")
+        if (playerCondition == GameSituations.win)
         {
-            gameSituationStateText.text = playerCondition;
             isGameOver = true;
+            ticTacToePlayer.AddScore(100);
             return true;
+        }
+        else if (playerCondition == "Tie")
+        {
+            isGameOver = true;
+            uiViewController.gameSituationStateText.text = playerCondition;
+            StartCoroutine(EndGameSplashScreen());
         }
         return false;
     }
@@ -166,8 +189,33 @@ public class BoardController : MonoBehaviour
             return;
         }
         string playerCondition = player.Turn(sectorIndex);
-        if (CheckingCondition(playerCondition)) return;
-        string enemyCindition = enemy.Turn(sectorIndex);
-        if (CheckingCondition(enemyCindition)) return;
+        if (CheckingCondition(playerCondition, player))
+        {
+            EndGameSetup(enemy, GameSituations.win);
+            return;
+        }
+
+        string enemyCindition = enemy.Turn(enemySectorIndex);
+        if (CheckingCondition(enemyCindition, enemy))
+        {
+            EndGameSetup(player, GameSituations.lose);
+            return;
+
+        }
+    }
+
+    private void EndGameSetup(TicTacToePlayer loserTicTacToePlayer, string gameSitution)
+    {
+        loserTicTacToePlayer.RemoveScore(100);
+        saveDataController.playerScore = player.GetScore();
+        saveDataController.SaveGame();
+        uiViewController.gameSituationStateText.text = player.GetName() + " " + gameSitution;
+        StartCoroutine(EndGameSplashScreen());
+    }
+
+    private IEnumerator EndGameSplashScreen()
+    {
+        yield return new WaitForSeconds(3);
+        SceneManager.LoadSceneAsync(1);
     }
 }

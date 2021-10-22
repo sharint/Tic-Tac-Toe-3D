@@ -518,6 +518,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1307031939}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1307031941 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7792454332763502590, guid: 691ff7ccd1ed44ce6a07f8f8f1e8e805,
+    type: 3}
+  m_PrefabInstance: {fileID: 1307031939}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1843321336 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2876552638337678276, guid: 691ff7ccd1ed44ce6a07f8f8f1e8e805,
@@ -535,6 +547,7 @@ GameObject:
   - component: {fileID: 2069497930}
   - component: {fileID: 2069497929}
   - component: {fileID: 2069497931}
+  - component: {fileID: 2069497932}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -581,9 +594,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 1307031940}
-  buttons:
+  uiElements:
   - {fileID: 702135092}
   - {fileID: 1843321336}
-  canvasWidth: 0
-  canvasHeight: 0
-  volumeTexture: {fileID: 2800000, guid: ad43a1128e5474393a1fe6cf0896e87d, type: 3}
+--- !u!114 &2069497932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2069497928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97fbe952002ea402cb1ecfe295f0a488, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerScoreText: {fileID: 1307031941}
