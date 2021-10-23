@@ -2,10 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class SettingsDialogBox : MonoBehaviour
 {
     public static bool isShowingGUI = false;
+
+    private bool isShowingExitButton;
 
     public GameObject canvas;
 
@@ -15,11 +19,13 @@ public class SettingsDialogBox : MonoBehaviour
     private float canvasHeight;
 
     private ButtonGUI backButton;
+    private ButtonGUI exitButton;
     private VolumeSliderGUI volumeSlider;
 
     private Texture volumeTexture;
 
     private SaveDataController saveDataController;
+    private DialogBoxController dialogBoxController;
 
     private void Awake()
     {
@@ -29,9 +35,9 @@ public class SettingsDialogBox : MonoBehaviour
     private void Start()
     {
         GetCanvasRect();
+        dialogBoxController = gameObject.GetComponent<DialogBoxController>();
         saveDataController = new SaveDataController();
         saveDataController.LoadGame();
-        SetupAllGUI(saveDataController.volumeValue);
     }
 
 
@@ -45,7 +51,27 @@ public class SettingsDialogBox : MonoBehaviour
                 saveDataController.SaveGame();
                 HideSettingsUI();
             }
+            if (isShowingExitButton)
+            {
+                if (exitButton.IsClicked())
+                {
+                    isShowingGUI = false;
+                    dialogBoxController.Show();
+                }
+            }
         }
+        if (dialogBoxController.buttonState == DialogBoxController.ButtonStates.Yes)
+        {
+            dialogBoxController.buttonState = DialogBoxController.ButtonStates.None;
+            isShowingGUI = false;
+            LoadingController.Load("UI Scene");
+        }
+        if (dialogBoxController.buttonState == DialogBoxController.ButtonStates.No)
+        {
+            dialogBoxController.buttonState = DialogBoxController.ButtonStates.None;
+            isShowingGUI = true;
+        }
+
     }
 
     private void GetCanvasRect()
@@ -59,6 +85,10 @@ public class SettingsDialogBox : MonoBehaviour
     {
         SetupVolumeSlider(sliderValue);
         SetupBackButton();
+        if (isShowingExitButton)
+        {
+            SetupExitButton();
+        }
     }
 
     private void SetupVolumeSlider(float sliderValue)
@@ -87,7 +117,19 @@ public class SettingsDialogBox : MonoBehaviour
         backButton = new ButtonGUI(backButtonWidth, backButtonHeight, backButtonX, backButtonY, backButtonName);
     }
 
- 
+    private void SetupExitButton()
+    {
+        float exitButtonOffsetX = 0;
+        float exitButtonOffsetY = 300;
+        float exitButtonWidth = 300;
+        float exitButtonHeight = 50;
+        float exitButtonX = (canvasWidth / 2) - (exitButtonWidth / 2) + exitButtonOffsetX;
+        float exitButtonY = (canvasHeight / 2) - (exitButtonHeight / 2) + exitButtonOffsetY;
+        string exitButtonName = "Main menu";
+        exitButton = new ButtonGUI(exitButtonWidth, exitButtonHeight, exitButtonX, exitButtonY, exitButtonName);
+    }
+
+
 
     private void ShowSettingsUI()
     {
@@ -108,9 +150,11 @@ public class SettingsDialogBox : MonoBehaviour
         }
     }
 
-    public void Click()
-    { 
-        ShowSettingsUI();   
+    public void Click(bool isShowingExitButton)
+    {
+        this.isShowingExitButton = isShowingExitButton;
+        ShowSettingsUI();
+        SetupAllGUI(saveDataController.volumeValue);
     }
 }
 
@@ -261,6 +305,32 @@ public class BoxGUI: MyGUI
     {
         Rect boxRect = GetRect();
         GUI.Box(boxRect, text);
+    }
+}
+
+public class TextFiledGUI : MyGUI
+{
+    private string text;
+
+    public TextFiledGUI(float width, float height, float x, float y, string text): base(width, height, x, y)
+    {
+        this.text = text;
+    }
+
+    public string GetText()
+    {
+        return text;
+    }
+
+    public void SetText(string text)
+    {
+        this.text = text;
+    }
+
+    public override void Show()
+    {
+        Rect textFieldRect = GetRect();
+        text = GUI.TextField(textFieldRect, text);
     }
 }
 

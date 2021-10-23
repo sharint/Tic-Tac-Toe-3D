@@ -14,16 +14,18 @@ public class DialogBoxController : MonoBehaviour
     private bool isShowingDialogBox = false;
 
     private TextureAndTextDialogBox textureAndTextDialogBox;
+    //private TextFieldAndTextDialogBox textFieldAndTextDialogBox;
 
-    public enum ButtonStates {Yes, No, Cancel, None};
-    private ButtonStates buttonState;
+    public enum ButtonStates { None, Yes, No, Cancel, Done};
+    public ButtonStates buttonState;
 
     private void Start()
     {
-        isShowingDialogBox = true;
+        texture = Resources.Load<Texture>("UI/Volume Texture");
+        isShowingDialogBox = false;
         buttonState = ButtonStates.None;
         GetCanvasRect();
-        SetupBackButton();
+        SetupTextureAndTextDialogBox();
     }
 
     private void OnGUI()
@@ -32,23 +34,31 @@ public class DialogBoxController : MonoBehaviour
         {
             buttonState = textureAndTextDialogBox.ShowAllGUI();
         }
-        switch (buttonState)
+        if (buttonState != ButtonStates.None)
         {
-            case ButtonStates.Yes:
-                isShowingDialogBox = false;
-                print("Yes pressed");
-                break;
-            case ButtonStates.No:
-                isShowingDialogBox = false;
-                print("no pressed");
-                break;
-            case ButtonStates.None:
-                break;
-            default:
-                isShowingDialogBox = false;
-                print("Error, somethin went wrong");
-                break;
+            isShowingDialogBox = false;
         }
+        //switch (buttonState)
+        //{
+        //    case ButtonStates.Yes:
+        //        isShowingDialogBox = false;
+        //        break;
+        //    case ButtonStates.No:
+        //        isShowingDialogBox = false;
+        //        break;
+        //    case ButtonStates.Done:
+        //        isShowingDialogBox = false;
+        //        break;
+        //    case ButtonStates.Cancel:
+        //        isShowingDialogBox = false;
+        //        break;
+        //    case ButtonStates.None:
+        //        break;
+        //    default:
+        //        isShowingDialogBox = false;
+        //        Debug.LogError("Error, Unknown button state");
+        //        break;
+        //}
     }
 
     private void GetCanvasRect()
@@ -58,7 +68,7 @@ public class DialogBoxController : MonoBehaviour
         canvasHeight = rectTransformCanvas.rect.height;
     }
 
-    private void SetupBackButton()
+    private void SetupTextureAndTextDialogBox()
     {
         float backButtonOffsetX = 0;
         float backButtonOffsetY = 200;
@@ -68,9 +78,10 @@ public class DialogBoxController : MonoBehaviour
         float backButtonY = (canvasHeight / 2) - (backButtonHeight / 2) + backButtonOffsetY;
         string backButtonName = "Are you sure?";
         textureAndTextDialogBox = new TextureAndTextDialogBox(backButtonWidth, backButtonHeight, backButtonX, backButtonY,texture, backButtonName);
+        //textFieldAndTextDialogBox = new TextFieldAndTextDialogBox(backButtonWidth, backButtonHeight, backButtonX, backButtonY, backButtonName);
     }
 
-    public void Click()
+    public void Show()
     {
         isShowingDialogBox = true;
     }
@@ -133,6 +144,74 @@ public class TextureAndTextDialogBox : MyGUI
         if (noButton.IsClicked())
         {
             return DialogBoxController.ButtonStates.No;
+        }
+        return DialogBoxController.ButtonStates.None;
+    }
+}
+
+public class TextFieldAndTextDialogBox : MyGUI
+{
+    private string text;
+
+    private TextFiledGUI textField;
+    private BoxGUI box;
+    private ButtonGUI doneButton;
+    private ButtonGUI cancelButton;
+
+
+    public TextFieldAndTextDialogBox(float width, float height, float x, float y, string text) : base(width, height, x, y)
+    {
+        this.text = text;
+        SetNearUI();
+    }
+
+    public string GetText()
+    {
+        return text;
+    }
+
+    private void SetNearUI()
+    {
+        float boxWidth = GetWidth();
+        float boxHeight = GetHeight();
+        float boxX = GetX();
+        float boxY = GetY();
+        box = new BoxGUI(boxWidth, boxHeight, boxX, boxY, text);
+
+        float textFieldWidth = GetWidth();
+        float textFieldHeight = 75;
+        float textFieldX = GetX() + GetWidth() / 2 - textFieldWidth / 2;
+        float textFieldY = GetY() + GetHeight() / 2 - textFieldHeight / 2;
+        textField = new TextFiledGUI(textFieldWidth, textFieldHeight, textFieldX, textFieldY, text);
+
+        float yesButtonWidth = GetWidth() / 2;
+        float yesButtonHeight = GetHeight() / 4;
+        float yesButtonX = GetX();
+        float yesButtonY = GetY() + GetHeight() - yesButtonHeight;
+        string yesButtonText = "Done";
+        doneButton = new ButtonGUI(yesButtonWidth, yesButtonHeight, yesButtonX, yesButtonY, yesButtonText);
+
+        float noButtonWidth = GetWidth() / 2;
+        float noButtonHeight = GetHeight() / 4;
+        float noButtonX = GetX() + GetWidth() / 2;
+        float noButtonY = GetY() + GetHeight() - noButtonHeight;
+        string noButtonText = "Cancel";
+        cancelButton = new ButtonGUI(noButtonWidth, noButtonHeight, noButtonX, noButtonY, noButtonText);
+    }
+
+    public DialogBoxController.ButtonStates ShowAllGUI()
+    {
+        box.Show();
+        textField.Show();
+        text = textField.GetText();
+        textField.SetText(text);
+        if (doneButton.IsClicked())
+        {
+            return DialogBoxController.ButtonStates.Done;
+        }
+        if (cancelButton.IsClicked())
+        {
+            return DialogBoxController.ButtonStates.Cancel;
         }
         return DialogBoxController.ButtonStates.None;
     }

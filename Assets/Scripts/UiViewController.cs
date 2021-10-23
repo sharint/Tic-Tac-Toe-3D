@@ -12,6 +12,10 @@ public class UiViewController : MonoBehaviour
     public Text enemyNameText;
     public Text timer;
 
+    public Image blackOutImage;
+
+    private const float blackOutSeconds = 3f;
+
     private float pauseTime = 0f;
     private float currentTime = 0f;
 
@@ -19,6 +23,7 @@ public class UiViewController : MonoBehaviour
     {
         SetTimer();
     }
+
 
     public void GameOver(string gameState)
     {
@@ -57,6 +62,6 @@ public class UiViewController : MonoBehaviour
     public void Pause()
     {
         SettingsDialogBox settingsDialogBox = new SettingsDialogBox();
-        settingsDialogBox.Click();
+        settingsDialogBox.Click(true);
     }
 }

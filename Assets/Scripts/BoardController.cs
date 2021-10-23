@@ -215,7 +215,9 @@ public class BoardController : MonoBehaviour
 
     private IEnumerator EndGameSplashScreen()
     {
-        yield return new WaitForSeconds(3);
-        SceneManager.LoadSceneAsync(1);
+        ScreenFader.Fader(3);
+        yield return new WaitForSeconds(7);
+        //SceneManager.LoadSceneAsync(1);
+        LoadingController.Load("UI Scene");
     }
 }
