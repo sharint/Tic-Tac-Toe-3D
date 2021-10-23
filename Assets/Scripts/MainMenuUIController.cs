@@ -8,6 +8,8 @@ public class MainMenuUIController : MonoBehaviour
 {
     public Text playerScoreText;
 
+    public Text previousGameDataText;
+
     private DialogBoxController dialogBoxController;
 
    
@@ -15,9 +17,17 @@ public class MainMenuUIController : MonoBehaviour
     private void Start()
     {
         dialogBoxController = gameObject.GetComponent<DialogBoxController>();
+
         SaveDataController saveDataController = new SaveDataController();
-        saveDataController.LoadGame();
-        playerScoreText.text = "Рейтинг: " + saveDataController.playerScore.ToString();
+
+        saveDataController.Load(SaveDataController.SaveDataTypes.EndGame);
+
+        string playerScore = saveDataController.playerScore.ToString();
+        playerScoreText.text = "Рейтинг: " + playerScore;
+
+        string winner = saveDataController.winner;
+        string time = saveDataController.time;
+        previousGameDataText.text = "Предыдущая игра - Победитель: " + winner + "\n" + "Время: " + time;
     }
 
     private void Update()

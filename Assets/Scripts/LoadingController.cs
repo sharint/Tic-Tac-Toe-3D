@@ -7,7 +7,7 @@ public class LoadingController : MonoBehaviour
 {
     private const string loadingScreenPrefabPath = "Prefabs/Loading Screen";
 
-    private static string loadSceneName;
+    private static int loadSceneIndex;
     private static GameObject loadingScreenPrefab;
     
     private AsyncOperation asyncLoad;
@@ -16,11 +16,11 @@ public class LoadingController : MonoBehaviour
     public Text currentProgressText;
     public Text currentStateText;
 
-    public static void Load(string SceneName)
+    public static void Load(int sceneID)
     {
         loadingScreenPrefab = Resources.Load<GameObject>(loadingScreenPrefabPath);
         Instantiate(loadingScreenPrefab);
-        loadSceneName = SceneName;
+        loadSceneIndex = sceneID;
 
     }
 
@@ -65,7 +65,7 @@ public class LoadingController : MonoBehaviour
 
     private AsyncOperation CreateOperation()
     {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(loadSceneName);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(loadSceneIndex);
         asyncLoad.allowSceneActivation = false;
         return asyncLoad;
     }

@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-
 
 public class SettingsDialogBox : MonoBehaviour
 {
@@ -37,7 +35,7 @@ public class SettingsDialogBox : MonoBehaviour
         GetCanvasRect();
         dialogBoxController = gameObject.GetComponent<DialogBoxController>();
         saveDataController = new SaveDataController();
-        saveDataController.LoadGame();
+        saveDataController.Load(SaveDataController.SaveDataTypes.Settings);
     }
 
 
@@ -45,10 +43,12 @@ public class SettingsDialogBox : MonoBehaviour
     {
         if (isShowingGUI) 
         {
-            saveDataController.volumeValue = volumeSlider.GetSliderValue();
+            float volume = volumeSlider.GetSliderValue();
+            Camera.main.GetComponent<AudioSource>().volume = volume;
+            saveDataController.volumeValue = volume;
             if (backButton.IsClicked()) 
             {
-                saveDataController.SaveGame();
+                saveDataController.Save(SaveDataController.SaveDataTypes.Settings);
                 HideSettingsUI();
             }
             if (isShowingExitButton)
@@ -64,7 +64,7 @@ public class SettingsDialogBox : MonoBehaviour
         {
             dialogBoxController.buttonState = DialogBoxController.ButtonStates.None;
             isShowingGUI = false;
-            LoadingController.Load("UI Scene");
+            LoadingController.Load(1);
         }
         if (dialogBoxController.buttonState == DialogBoxController.ButtonStates.No)
         {
@@ -113,7 +113,7 @@ public class SettingsDialogBox : MonoBehaviour
         float backButtonHeight = 50;
         float backButtonX = (canvasWidth / 2) - (backButtonWidth / 2) + backButtonOffsetX;
         float backButtonY = (canvasHeight / 2) - (backButtonHeight / 2) + backButtonOffsetY;
-        string backButtonName = "Back";
+        string backButtonName = "Назад";
         backButton = new ButtonGUI(backButtonWidth, backButtonHeight, backButtonX, backButtonY, backButtonName);
     }
 
@@ -125,7 +125,7 @@ public class SettingsDialogBox : MonoBehaviour
         float exitButtonHeight = 50;
         float exitButtonX = (canvasWidth / 2) - (exitButtonWidth / 2) + exitButtonOffsetX;
         float exitButtonY = (canvasHeight / 2) - (exitButtonHeight / 2) + exitButtonOffsetY;
-        string exitButtonName = "Main menu";
+        string exitButtonName = "В главное меню";
         exitButton = new ButtonGUI(exitButtonWidth, exitButtonHeight, exitButtonX, exitButtonY, exitButtonName);
     }
 

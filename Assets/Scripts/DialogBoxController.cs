@@ -38,27 +38,6 @@ public class DialogBoxController : MonoBehaviour
         {
             isShowingDialogBox = false;
         }
-        //switch (buttonState)
-        //{
-        //    case ButtonStates.Yes:
-        //        isShowingDialogBox = false;
-        //        break;
-        //    case ButtonStates.No:
-        //        isShowingDialogBox = false;
-        //        break;
-        //    case ButtonStates.Done:
-        //        isShowingDialogBox = false;
-        //        break;
-        //    case ButtonStates.Cancel:
-        //        isShowingDialogBox = false;
-        //        break;
-        //    case ButtonStates.None:
-        //        break;
-        //    default:
-        //        isShowingDialogBox = false;
-        //        Debug.LogError("Error, Unknown button state");
-        //        break;
-        //}
     }
 
     private void GetCanvasRect()

@@ -35,6 +35,7 @@ public class BoardController : MonoBehaviour
         saveDataController = new SaveDataController();
         isGameOver = false;
         sectors = new List<GameObject>();
+
         SetUiViewController();
 
         CreateTicTacToeBoard();
@@ -62,11 +63,14 @@ public class BoardController : MonoBehaviour
 
     private void CreateTicTacToePlayers()
     {
+        saveDataController.Load(SaveDataController.SaveDataTypes.StartGame);
         int enemyScore = 0;
-        saveDataController.LoadGame();
         int playerScore = saveDataController.playerScore;
-        player = new Player("Tim", playerScore);
-        enemy = new Enemy("Bot#1", enemyScore);
+        string playerName = saveDataController.playerName;
+        string enemyName = saveDataController.enemyName;
+
+        player = new Player(playerName, playerScore);
+        enemy = new Enemy(enemyName, enemyScore);
     }
 
     private void SetFirstTurn()
@@ -191,25 +195,36 @@ public class BoardController : MonoBehaviour
         string playerCondition = player.Turn(sectorIndex);
         if (CheckingCondition(playerCondition, player))
         {
-            EndGameSetup(enemy, GameSituations.win);
+            EndGameSetup(enemy, player, GameSituations.win, "+");
             return;
         }
 
         string enemyCindition = enemy.Turn(enemySectorIndex);
         if (CheckingCondition(enemyCindition, enemy))
         {
-            EndGameSetup(player, GameSituations.lose);
+            EndGameSetup(player, enemy, GameSituations.lose, "-");
             return;
 
         }
     }
 
-    private void EndGameSetup(TicTacToePlayer loserTicTacToePlayer, string gameSitution)
+    private void HideSectors()
+    {
+        foreach(GameObject sector in sectors)
+        {
+            sector.SetActive(false);
+        }
+    }
+
+    private void EndGameSetup(TicTacToePlayer loserTicTacToePlayer, TicTacToePlayer winnerTicTacToePlayer, string gameSitution, string plusOrMinus)
     {
         loserTicTacToePlayer.RemoveScore(100);
         saveDataController.playerScore = player.GetScore();
-        saveDataController.SaveGame();
-        uiViewController.gameSituationStateText.text = player.GetName() + " " + gameSitution;
+        saveDataController.winner = winnerTicTacToePlayer.GetName();
+        saveDataController.time = uiViewController.timer.text;
+        saveDataController.Save(SaveDataController.SaveDataTypes.EndGame);
+        HideSectors();
+        uiViewController.gameSituationStateText.text = player.GetName() + " " + gameSitution + "\n" + plusOrMinus + "100 очков";
         StartCoroutine(EndGameSplashScreen());
     }
 
@@ -217,7 +232,6 @@ public class BoardController : MonoBehaviour
     {
         ScreenFader.Fader(3);
         yield return new WaitForSeconds(7);
-        //SceneManager.LoadSceneAsync(1);
-        LoadingController.Load("UI Scene");
+        LoadingController.Load(1);
     }
 }
